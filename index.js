@@ -1,42 +1,46 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
-const Dishes = require('./models/dishes');
-
+const Anggota = require('./dishes');
 const url = 'mongodb://localhost:27017/conFusion';
+
 const connect = mongoose.connect(url);
 
 connect.then((db)=>{
-    console.log('Connected Directly to server');
+    console.log('Connceted successfully to server');
 
-    Dishes.create({
-        name:"Uthapizzas",
-        description:"Test"
+    Anggota.create({
+        nama: "muh hilmi fawwaz",
+        kodeSolver : "Solver-SS-015",
+        skillset: {
+            skill: "ngoding",
+            skillRating: 4
+        }
     })
-    .then((dish)=>{
-        console.log(dish)
-        return Dishes.findByIdAndUpdate(dish._id, {
-            $set: {description: 'Updated test'}},
-            { new:true }
+    .then((angota)=>{
+        console.log(angota);
+        return Anggota.findByIdAndUpdate(angota._id, {
+            $set: {kodeSolver: "Solver-SS-016"}}, { new : true }
+
         ).exec();
     })
-    .then((dish)=>{
-        console.log(dish);
+    .then((angota)=>{
+        console.log(angota);
+        
+        angota.skillset.push({
+            skill: "power point",
+            skillRating: 3
+        })
 
-        dish.comments.push({
-            rating: 5,
-            comment: "damn. isgood",
-            author:'Leonardo di Capaccio'
-        });
-        return dish.save();
+        return angota.save();
     })
-    .then((dish)=>{
-        console.log(dish)
-        return Dishes.remove({})
+    .then((angota)=> {
+        console.log(angota)
+        return Anggota.deleteMany({})
     })
     .then(()=>{
         return mongoose.connection.close();
     })
     .catch((err)=>{
         console.log(err);
-    });
-});
+    })
+})
